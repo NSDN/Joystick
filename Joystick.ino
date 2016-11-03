@@ -14,13 +14,12 @@
 #define KEY_R1      A3
 #define KEY_R2      A1
 
-#define MODE_A      8
-#define MODE_B      9
-#define MODE_C      10
-#define MODE_D      16
+#define MODE_A      9
+#define MODE_B      8
+#define MODE_C      16
+#define MODE_D      10
 
-int count = 0;
-bool state = false;
+bool stateA = false, stateD = false;
 
 void setup() {
     /*INPUT Mode*/
@@ -63,15 +62,22 @@ void setup() {
     digitalWrite(MODE_C, HIGH);
     digitalWrite(MODE_D, HIGH);
 
-    delay(1000);
-    count = millis();
     pinMode(0, OUTPUT);
+    delay(1000);
     
     Keyboard.begin();
 }
 
 void loop() {
     if (!digitalRead(MODE_A)) {
+        if (!stateA) {
+            stateA = true;
+            if (stateD) stateD = false;
+            digitalWrite(0, HIGH);
+            delay(250);
+            digitalWrite(0, LOW);
+        }
+        
         if (digitalRead(KEY_LEFT) && digitalRead(KEY_DOWN)) Keyboard.release('d');
         else Keyboard.press('d');  
         if (digitalRead(KEY_UP) && digitalRead(KEY_RIGHT)) Keyboard.release('f');
@@ -84,13 +90,16 @@ void loop() {
         else Keyboard.press('`');
         if (digitalRead(KEY_R2)) Keyboard.release(KEY_ESC);
         else Keyboard.press(KEY_ESC);
-
-        if (millis() - count > 500) {
-            count = millis();
-            state = !state;
-            digitalWrite(0, state);
+        
+    } else if (!digitalRead(MODE_D)) {
+        if (!stateD) {
+            stateD = true;
+            if (stateA) stateA = false;
+            digitalWrite(0, HIGH);
+            delay(250);
+            digitalWrite(0, LOW);
         }
-    }  else if (!digitalRead(MODE_D)) {
+        
         if (digitalRead(KEY_UP)) Keyboard.release(KEY_UP_ARROW);
         else Keyboard.press(KEY_UP_ARROW);
         if (digitalRead(KEY_DOWN)) Keyboard.release(KEY_DOWN_ARROW);
@@ -118,12 +127,14 @@ void loop() {
         if (digitalRead(KEY_R1)) Keyboard.release('b');
         else Keyboard.press('b');
 
-        if (millis() - count > 250) {
-            count = millis();
-            state = !state;
-            digitalWrite(0, state);
-        }
     } else {
+        if (stateA || stateD) {
+            stateA = stateD = false;
+            digitalWrite(0, HIGH);
+            delay(250);
+            digitalWrite(0, LOW);
+        }
+        
         if (digitalRead(KEY_UP)) Keyboard.release(KEY_UP_ARROW);
         else Keyboard.press(KEY_UP_ARROW);
         if (digitalRead(KEY_DOWN)) Keyboard.release(KEY_DOWN_ARROW);
@@ -150,11 +161,6 @@ void loop() {
         else Keyboard.press(KEY_ESC);
         if (digitalRead(KEY_L2)) Keyboard.release(KEY_RETURN);
         else Keyboard.press(KEY_RETURN);
-
-        if (millis() - count > 1000) {
-            count = millis();
-            state = !state;
-            digitalWrite(0, state);
-        }
+        
     }
 }
