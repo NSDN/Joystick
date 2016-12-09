@@ -1,166 +1,109 @@
 #include "Keyboard.h"
 
-#define KEY_UP      3
-#define KEY_LEFT    5
-#define KEY_DOWN    7
-#define KEY_RIGHT   6
-#define KEY_L1      4
-#define KEY_L2      2
+#define KEY_LUP      3
+#define KEY_LLEFT    5
+#define KEY_LRIGHT   6
+#define KEY_L1       4
+#define KEY_L2       2
 
-#define KEY_A       A2
-#define KEY_B       15
-#define KEY_X       A0
-#define KEY_Y       14
-#define KEY_R1      A3
-#define KEY_R2      A1
+#define KEY_RUP      A2
+#define KEY_RLEFT    15
+#define KEY_RRIGHT   A0
+#define KEY_R1       A3
+#define KEY_R2       A1
 
-#define MODE_A      9
-#define MODE_B      8
-#define MODE_C      16
-#define MODE_D      10
-
-bool stateA = false, stateD = false;
+#define MODE_A       1
+#define MODE_B       0
 
 void setup() {
     /*INPUT Mode*/
-    pinMode(KEY_UP, INPUT);
-    pinMode(KEY_LEFT, INPUT);
-    pinMode(KEY_DOWN, INPUT);
-    pinMode(KEY_RIGHT, INPUT);
+    pinMode(KEY_LUP, INPUT);
+    pinMode(KEY_LLEFT, INPUT);
+    pinMode(KEY_LRIGHT, INPUT);
     pinMode(KEY_L1, INPUT);
     pinMode(KEY_L2, INPUT);
     
-    pinMode(KEY_A, INPUT);
-    pinMode(KEY_B, INPUT);
-    pinMode(KEY_X, INPUT);
-    pinMode(KEY_Y, INPUT);
+    pinMode(KEY_RUP, INPUT);
+    pinMode(KEY_RLEFT, INPUT);
+    pinMode(KEY_RRIGHT, INPUT);
     pinMode(KEY_R1, INPUT);
     pinMode(KEY_R2, INPUT);
 
     pinMode(MODE_A, INPUT);
     pinMode(MODE_B, INPUT);
-    pinMode(MODE_C, INPUT);
-    pinMode(MODE_D, INPUT);
     
     /*PULL UP*/
-    digitalWrite(KEY_UP, HIGH);
-    digitalWrite(KEY_LEFT, HIGH);
-    digitalWrite(KEY_DOWN, HIGH);
-    digitalWrite(KEY_RIGHT, HIGH);
+    digitalWrite(KEY_LUP, HIGH);
+    digitalWrite(KEY_LLEFT, HIGH);
+    digitalWrite(KEY_LRIGHT, HIGH);
     digitalWrite(KEY_L1, HIGH);
     digitalWrite(KEY_L2, HIGH);
     
-    digitalWrite(KEY_A, HIGH);
-    digitalWrite(KEY_B, HIGH);
-    digitalWrite(KEY_X, HIGH);
-    digitalWrite(KEY_Y, HIGH);
+    digitalWrite(KEY_RUP, HIGH);
+    digitalWrite(KEY_RLEFT, HIGH);
+    digitalWrite(KEY_RRIGHT, HIGH);
     digitalWrite(KEY_R1, HIGH);
     digitalWrite(KEY_R2, HIGH);
 
     digitalWrite(MODE_A, HIGH);
     digitalWrite(MODE_B, HIGH);
-    digitalWrite(MODE_C, HIGH);
-    digitalWrite(MODE_D, HIGH);
 
-    pinMode(0, OUTPUT);
     delay(1000);
     
     Keyboard.begin();
 }
 
 void loop() {
-    if (!digitalRead(MODE_A)) {
-        if (!stateA) {
-            stateA = true;
-            if (stateD) stateD = false;
-            digitalWrite(0, HIGH);
-            delay(250);
-            digitalWrite(0, LOW);
-        }
-        
-        if (digitalRead(KEY_LEFT) && digitalRead(KEY_DOWN)) Keyboard.release('d');
-        else Keyboard.press('d');  
-        if (digitalRead(KEY_UP) && digitalRead(KEY_RIGHT)) Keyboard.release('f');
-        else Keyboard.press('f');
-        if (digitalRead(KEY_A) && digitalRead(KEY_B)) Keyboard.release('j');
-        else Keyboard.press('j');
-        if (digitalRead(KEY_X) && digitalRead(KEY_Y)) Keyboard.release('k');
-        else Keyboard.press('k');
-        if (digitalRead(KEY_L1)) Keyboard.release('`');
-        else Keyboard.press('`');
-        if (digitalRead(KEY_R2)) Keyboard.release(KEY_ESC);
-        else Keyboard.press(KEY_ESC);
-        
-    } else if (!digitalRead(MODE_D)) {
-        if (!stateD) {
-            stateD = true;
-            if (stateA) stateA = false;
-            digitalWrite(0, HIGH);
-            delay(250);
-            digitalWrite(0, LOW);
-        }
-        
-        if (digitalRead(KEY_UP)) Keyboard.release(KEY_UP_ARROW);
-        else Keyboard.press(KEY_UP_ARROW);
-        if (digitalRead(KEY_DOWN)) Keyboard.release(KEY_DOWN_ARROW);
-        else Keyboard.press(KEY_DOWN_ARROW);
-        if (digitalRead(KEY_LEFT)) Keyboard.release(KEY_LEFT_ARROW);
-        else Keyboard.press(KEY_LEFT_ARROW);  
-        if (digitalRead(KEY_RIGHT)) Keyboard.release(KEY_RIGHT_ARROW);
-        else Keyboard.press(KEY_RIGHT_ARROW);
+    if (!digitalRead(MODE_A) && digitalRead(MODE_B)) {
 
-        if (digitalRead(KEY_L1)) Keyboard.release(KEY_ESC);
-        else Keyboard.press(KEY_ESC);
-        if (digitalRead(KEY_R2)) Keyboard.release(KEY_RETURN);
-        else Keyboard.press(KEY_RETURN);
-
-        if (digitalRead(KEY_A)) Keyboard.release('z');
-        else Keyboard.press('z');
-        if (digitalRead(KEY_B)) Keyboard.release('z');
-        else Keyboard.press('z');
-        if (digitalRead(KEY_X)) Keyboard.release('x');
-        else Keyboard.press('x');
-        if (digitalRead(KEY_Y)) Keyboard.release('x');
-        else Keyboard.press('x');
-        if (digitalRead(KEY_L2)) Keyboard.release('c');
-        else Keyboard.press('c');
-        if (digitalRead(KEY_R1)) Keyboard.release('b');
-        else Keyboard.press('b');
-
-    } else {
-        if (stateA || stateD) {
-            stateA = stateD = false;
-            digitalWrite(0, HIGH);
-            delay(250);
-            digitalWrite(0, LOW);
-        }
-        
-        if (digitalRead(KEY_UP)) Keyboard.release(KEY_UP_ARROW);
-        else Keyboard.press(KEY_UP_ARROW);
-        if (digitalRead(KEY_DOWN)) Keyboard.release(KEY_DOWN_ARROW);
-        else Keyboard.press(KEY_DOWN_ARROW);
-        if (digitalRead(KEY_LEFT)) Keyboard.release(KEY_LEFT_ARROW);
-        else Keyboard.press(KEY_LEFT_ARROW);  
-        if (digitalRead(KEY_RIGHT)) Keyboard.release(KEY_RIGHT_ARROW);
-        else Keyboard.press(KEY_RIGHT_ARROW);
-    
-        if (digitalRead(KEY_A)) Keyboard.release('z');
-        else Keyboard.press('z');
-        if (digitalRead(KEY_B)) Keyboard.release('x');
-        else Keyboard.press('x');
-        if (digitalRead(KEY_X)) Keyboard.release('a');
-        else Keyboard.press('a');
-        if (digitalRead(KEY_Y)) Keyboard.release('s');
+        if (digitalRead(KEY_L1)) Keyboard.release('s');
         else Keyboard.press('s');
-        if (digitalRead(KEY_R1)) Keyboard.release('c');
-        else Keyboard.press('c');
-        if (digitalRead(KEY_R2)) Keyboard.release('d');
-        else Keyboard.press('d');
+        if (digitalRead(KEY_LUP)) Keyboard.release('d');
+        else Keyboard.press('d');  
+        if (digitalRead(KEY_L2)) Keyboard.release('f');
+        else Keyboard.press('f');
+        if (digitalRead(KEY_R1)) Keyboard.release('j');
+        else Keyboard.press('j');
+        if (digitalRead(KEY_RUP)) Keyboard.release('k');
+        else Keyboard.press('k');
+        if (digitalRead(KEY_R2)) Keyboard.release('l');
+        else Keyboard.press('l');
+        
+        if (digitalRead(KEY_LRIGHT) || digitalRead(KEY_RLEFT)) Keyboard.release(KEY_ESC);
+        else Keyboard.press(KEY_ESC);
+        if (digitalRead(KEY_LLEFT) || digitalRead(KEY_RRIGHT)) Keyboard.release('`');
+        else Keyboard.press('`');
+        
+    } else if (!digitalRead(MODE_B) && digitalRead(MODE_A)) {
+        
+        if (digitalRead(KEY_RUP)) Keyboard.release(KEY_UP_ARROW);
+        else Keyboard.press(KEY_UP_ARROW);
+        if (digitalRead(KEY_RLEFT)) Keyboard.release(KEY_LEFT_ARROW);
+        else Keyboard.press(KEY_LEFT_ARROW);  
+        if (digitalRead(KEY_RRIGHT)) Keyboard.release(KEY_RIGHT_ARROW);
+        else Keyboard.press(KEY_RIGHT_ARROW);
+        if (digitalRead(KEY_LUP)) Keyboard.release(KEY_DOWN_ARROW);
+        else Keyboard.press(KEY_DOWN_ARROW);
+        if (digitalRead(KEY_R1) || digitalRead(KEY_R2)) Keyboard.release(' ');
+        else Keyboard.press(' ');
 
         if (digitalRead(KEY_L1)) Keyboard.release(KEY_ESC);
         else Keyboard.press(KEY_ESC);
         if (digitalRead(KEY_L2)) Keyboard.release(KEY_RETURN);
         else Keyboard.press(KEY_RETURN);
+
+        if (digitalRead(KEY_LLEFT)) Keyboard.release('z');
+        else Keyboard.press('z');
+        if (digitalRead(KEY_LRIGHT)) Keyboard.release('x');
+        else Keyboard.press('x');
+
+    } else if (!digitalRead(MODE_B) && !digitalRead(MODE_A)) {
+  
+        
+        
+    } else {
+        
+        
         
     }
 }
