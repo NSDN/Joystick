@@ -1,19 +1,19 @@
 #include "Keyboard.h"
 
-#define KEY_LUP      3
-#define KEY_LLEFT    5
-#define KEY_LRIGHT   6
-#define KEY_L1       4
-#define KEY_L2       2
+#define KEY_LUP      6
+#define KEY_LLEFT    8
+#define KEY_LRIGHT   9
+#define KEY_L1       5
+#define KEY_L2       7
 
-#define KEY_RUP      A2
-#define KEY_RLEFT    15
-#define KEY_RRIGHT   A0
-#define KEY_R1       A3
-#define KEY_R2       A1
+#define KEY_RUP      15
+#define KEY_RLEFT    10
+#define KEY_RRIGHT   16
+#define KEY_R1       14
+#define KEY_R2       A0
 
-#define MODE_A       1
-#define MODE_B       0
+#define MODE_A       0
+#define MODE_B       1
 
 void setup() {
     /*INPUT Mode*/
