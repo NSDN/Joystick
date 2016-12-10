@@ -92,14 +92,34 @@ void loop() {
         if (digitalRead(KEY_L2)) Keyboard.release(KEY_RETURN);
         else Keyboard.press(KEY_RETURN);
 
-        if (digitalRead(KEY_LLEFT)) Keyboard.release('z');
-        else Keyboard.press('z');
-        if (digitalRead(KEY_LRIGHT)) Keyboard.release('x');
+        if (digitalRead(KEY_LLEFT)) Keyboard.release('x');
         else Keyboard.press('x');
+        if (digitalRead(KEY_LRIGHT)) Keyboard.release('z');
+        else Keyboard.press('z');
 
     } else if (!digitalRead(MODE_B) && !digitalRead(MODE_A)) {
   
+        if (digitalRead(KEY_L1)) Keyboard.release('s');
+        else Keyboard.press('s');
+        if (digitalRead(KEY_LUP)) Keyboard.release(' ');
+        else Keyboard.press(' ');  
+        if (digitalRead(KEY_L2)) Keyboard.release('w');
+        else Keyboard.press('w');
+        if (digitalRead(KEY_LLEFT)) Keyboard.release('d');
+        else Keyboard.press('d');
+        if (digitalRead(KEY_LRIGHT)) Keyboard.release('a');
+        else Keyboard.press('a');
         
+        if (digitalRead(KEY_R1)) Keyboard.release(';');
+        else Keyboard.press(';');
+        if (digitalRead(KEY_RUP)) Keyboard.release('x');
+        else Keyboard.press('x');
+        if (digitalRead(KEY_R2)) Keyboard.release('\'');
+        else Keyboard.press('\'');
+        if (digitalRead(KEY_RLEFT)) Keyboard.release(',');
+        else Keyboard.press(',');
+        if (digitalRead(KEY_RRIGHT)) Keyboard.release('.');
+        else Keyboard.press('.');
         
     } else {
         
