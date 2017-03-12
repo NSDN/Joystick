@@ -1,4 +1,5 @@
 #include "Keyboard.h"
+#include "Mouse.h"
 
 enum Key {
     LWheelA = 2,
@@ -35,46 +36,45 @@ uint8_t outPorts[] = {
     RLedR, RLedY, RLedG
 };
 
-bool stateLA = false, stateLB = false;
-bool stateRA = false, stateRB = false;
+enum State {
+    Keybd,
+    Mise,
+    Etc
+} state;
+ 
+#define DELAY_TIM 50
 
-void INT_LWheelA() {
-    stateLA = true;
-    if (stateLB) {
-        // Clock
-        Keyboard.write('s');
-        stateLB = false;
-        stateLA = false;
+void INT_LWheel() {
+    delay(DELAY_TIM);
+    if (digitalRead(LWheelB) == LOW) {
+        if (digitalRead(LWheelA) == LOW) {
+            // Clock
+            if (state == Keybd) Keyboard.write('j');
+            else if (state == Mise) Mouse.move(0, 5, 0);
+        }
+    } else {
+        if (digitalRead(LWheelA) == LOW) {
+            // Anti-Clock
+            if (state == Keybd) Keyboard.write('u');
+            else if (state == Mise) Mouse.move(0, -5, 0);
+        }
     }
 }
 
-void INT_LWheelB() {
-    stateLB = true;
-    if (stateLA) {
-        // Anti-Clock
-        Keyboard.write('w');
-        stateLA = false;
-        stateLB = false;
-    }
-}
-
-void INT_RWheelA() {
-    stateRA = true;
-    if (stateRB) {
-        // Clock
-        Keyboard.write('d');
-        stateRB = false;
-        stateRA = false;
-    }
-}
-
-void INT_RWheelB() {
-    stateRB = true;
-    if (stateRA) {
-        // Anti-Clock
-        Keyboard.write('a');
-        stateRA = false;
-        stateRB = false;
+void INT_RWheel() {
+    delay(DELAY_TIM);
+    if (digitalRead(RWheelB) == LOW) {
+        if (digitalRead(RWheelA) == LOW) {
+            // Clock
+            if (state == Keybd) Keyboard.write('k');
+            else if (state == Mise) Mouse.move(5, 0, 0);
+        }
+    } else {
+        if (digitalRead(RWheelA) == LOW) {
+            // Anti-Clock
+            if (state == Keybd) Keyboard.write('h');
+            else if (state == Mise) Mouse.move(-5, 0, 0);
+        }
     }
 }
 
@@ -90,17 +90,63 @@ void setup() {
     delay(1000);
     
     Keyboard.begin();
+    Mouse.begin();
 
     /*Attach Interrupt*/
     
-    attachInterrupt(digitalPinToInterrupt(LWheelA), &INT_LWheelA, FALLING);
-    attachInterrupt(digitalPinToInterrupt(LWheelB), &INT_LWheelB, FALLING);
-    attachInterrupt(digitalPinToInterrupt(RWheelA), &INT_RWheelA, FALLING);
-    attachInterrupt(digitalPinToInterrupt(RWheelB), &INT_RWheelB, FALLING);
+    attachInterrupt(digitalPinToInterrupt(LWheelA), &INT_LWheel, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(RWheelA), &INT_RWheel, CHANGE);
     
 }
+bool led = false;
 
 void loop() {
+    digitalWrite(CLed, led);
+    led = !led;
+    
+    if (digitalRead(SwitchE) == HIGH) {
+        state = Keybd;
+    } else {
+        state = Mise;
+    }
+    
+    if (!digitalRead(LWheelBtn)) {
+        if (state == Keybd) {
+            while (!digitalRead(LWheelBtn));
+            Keyboard.write('y');
+        } else if (state == Mise) {
+            if (!Mouse.isPressed(MOUSE_LEFT)) {
+                Mouse.press(MOUSE_LEFT);
+            }
+        }
+    } else {
+        if (state == Mise) {
+            if (Mouse.isPressed(MOUSE_LEFT)) {
+                Mouse.release(MOUSE_LEFT);
+            }
+        }
+    }
+    if (!digitalRead(RWheelBtn)) {
+        if (state == Keybd) {
+            while (!digitalRead(RWheelBtn));
+            Keyboard.write('i');
+        } else if (state == Mise) {
+            if (!Mouse.isPressed(MOUSE_RIGHT)) {
+                Mouse.press(MOUSE_RIGHT);
+            }
+        }
+    } else {
+        if (state == Mise) {
+            if (Mouse.isPressed(MOUSE_RIGHT)) {
+                Mouse.release(MOUSE_RIGHT);
+            }
+        }
+    }
+
+    digitalWrite(LLedG, !digitalRead(LWheelA));
     digitalWrite(LLedY, !digitalRead(LWheelBtn));
-    digitalWrite(RLedY, !digitalRead(RWheelBtn));  
+    digitalWrite(LLedR, !digitalRead(LWheelB));
+    digitalWrite(RLedR, !digitalRead(RWheelA));
+    digitalWrite(RLedY, !digitalRead(RWheelBtn));
+    digitalWrite(RLedG, !digitalRead(RWheelB));
 }
